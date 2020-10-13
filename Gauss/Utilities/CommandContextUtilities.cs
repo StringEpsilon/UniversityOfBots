@@ -59,6 +59,9 @@ namespace Gauss.Utilities {
 					if (x.User.IsBot) {
 						return false;
 					}
+					if (x.User.Id != context.User.Id) {
+						return false;
+					}
 					return x.Message == botMessage &&
 				 		(x.Emoji == _confirmEmoji || x.Emoji == _abortEmoji);
 				},

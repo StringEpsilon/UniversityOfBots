@@ -19,12 +19,14 @@ using Gauss.Commands;
 using Gauss.Database;
 using Gauss.Models;
 using Gauss.Modules;
+using Gauss.Scheduling;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Gauss {
 	public class GaussBot {
 		private readonly DiscordClient _client;
+		private readonly Scheduler _scheduler;
 		private readonly GaussConfig _config;
 		private readonly List<object> _modules = new List<object>();
 		private readonly CommandsNextExtension _commands;
@@ -34,10 +36,15 @@ namespace Gauss {
 			this._client = new DiscordClient(new DiscordConfiguration {
 				Token = config.DiscordToken,
 			});
+
+			this._scheduler = new Scheduler();
+			
 			var commandServices = new ServiceCollection()
 				.AddDbContext<UserSettingsContext>(ServiceLifetime.Singleton)
 				.AddDbContext<GuildSettingsContext>(ServiceLifetime.Singleton)
+				.AddDbContext<PollRepository>(ServiceLifetime.Singleton)
 				.AddSingleton(this._config)
+				.AddSingleton(this._scheduler)
 				.BuildServiceProvider();
 
 			var commandConfig = new CommandsNextConfiguration {
@@ -60,9 +67,11 @@ namespace Gauss {
 			this._commands.RegisterCommands<SendMessageCommands>();
 			this._commands.RegisterCommands<AdminCommands>();
 			this._commands.RegisterCommands<MiscCommands>();
-			// this._commands.RegisterCommands<VoiceCommands>();
+			this._commands.RegisterCommands<VoteCommands>();
+			
 			// this._modules.Add(new RoleAssign(this._client, _config));
 			this._modules.Add(new WelcomeModule(this._client, this._config));
+
 			this._modules.Add(new RedditLinker(this._client, this._config));
 			this._modules.Add(new VCModule(this._client, this._config, commandServices));
 			this._commands.CommandErrored += this.Commands_CommandErrored;

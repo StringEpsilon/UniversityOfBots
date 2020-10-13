@@ -4,7 +4,7 @@
     <LangVersion>8.0</LangVersion>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-	<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+	<!-- <RuntimeIdentifier>linux-x64</RuntimeIdentifier> -->
     <RootNamespace>UniversityOfBots</RootNamespace>
   </PropertyGroup>
 

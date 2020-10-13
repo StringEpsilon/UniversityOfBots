@@ -28,7 +28,6 @@ namespace Gauss.CommandAttributes {
 
 			if (result) {
 				var userRestrictions = settingsContext.GetUserRestriction(guildId, context.User.Id);
-				Console.WriteLine(userRestrictions?.RestrictedCommands);
 				if (userRestrictions?.RestrictedCommands != null) {
 					result = userRestrictions.FindCommandRestriction(context.Command.QualifiedName) == null;
 				}
