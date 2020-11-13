@@ -30,3 +30,21 @@
 ### Suggested reading:
 
 - If you want a book on C#, "C# in Depth" by Jon Skeet is probably worth looking into. Though i haven't read it myself.
+
+### How to run the bot from source
+
+0. Install dotnet core 3.1 ([infos here](https://dotnet.microsoft.com/download))
+1. Clone the repository: `git clone https://github.com/StringEpsilon/UniversityOfBots.git`
+2. Run `dotnet restore` to install all the require dependencies.
+3. Create a folder (preferably in your home directory) called "GaussBot"
+4. Create a file called "config.json" in that new folder. (You can use the example_config.json as a template)
+5. Go to https://discord.com/developers/applications and create a new application
+6. In the new application:
+   6a. Enable "Presence Intent" and "Server Members intent" (under "Bot")
+   6b. Click on "Token" -> "Copy" and add that to the config.json (as "discord_token") (also under "Bot")
+   6c. Invite the bot to a discord server you can test it on.
+7. Execute `dotnet run`. You might have to specify the folder your config file sits in using `--configDir`
+
+Example:
+
+`dotnet run --configDir /home/user/coding/botconfig`
