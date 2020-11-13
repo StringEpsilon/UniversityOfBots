@@ -36,7 +36,7 @@
 0. Install dotnet core 3.1 ([infos here](https://dotnet.microsoft.com/download))
 1. Clone the repository: `git clone https://github.com/StringEpsilon/UniversityOfBots.git`
 2. Run `dotnet restore` to install all the require dependencies.
-3. Create a folder (preferably in your home directory) called "GaussBot"
+3. Create a folder for the configuration files (preferably `~/GaussBot`)
 4. Create a file called "config.json" in that new folder. (You can use the example_config.json as a template)
 5. Go to https://discord.com/developers/applications and create a new application
 6. In the new application:
@@ -47,4 +47,6 @@
 
 Example:
 
-`dotnet run --configDir /home/user/coding/botconfig`
+`dotnet run --configDir /home/user/coding/GaussBot`
+
+If you have your configuration folder is `~/GaussBot` (or, on Windows: `%HOMEPATH%\GaussBot`), the bot will automatically find it.
