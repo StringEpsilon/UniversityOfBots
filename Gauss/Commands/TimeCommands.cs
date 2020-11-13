@@ -20,6 +20,14 @@ namespace Gauss.Commands {
 	[CheckDisabled]
 	[Group("time")]
 	public class TimeCommands : BaseCommandModule {
+
+		private readonly ReminderRepository _repository;
+
+		public TimeCommands(ReminderRepository repository) {
+			this._repository = repository;
+		}
+
+
 		[GroupCommand]
 		[Command("now")]
 		[Description("Get the current time in your configured timezone (or UTC).")]
@@ -43,7 +51,7 @@ namespace Gauss.Commands {
 		[Command("now")]
 		[Description("Get the current time in a given timezone.")]
 		public async Task ConvertTime(
-			CommandContext context, 
+			CommandContext context,
 			[Description("Name of the timezone")]
 			string timezoneName
 		) {
@@ -66,7 +74,7 @@ namespace Gauss.Commands {
 		[Command("convert")]
 		[Description("Convert a UTC (date and) time to your configured timezone.")]
 		public async Task ConvertTime(
-			CommandContext context, 
+			CommandContext context,
 			[Description("Time (or date and time) you want to convert.")]
 			DateTime datetime
 		) {
@@ -84,9 +92,9 @@ namespace Gauss.Commands {
 
 		[Command("convert")]
 		[Description("Convert a UTC (date and) time to a given timezone.")]
-		public async Task ConvertTime(CommandContext context, 
+		public async Task ConvertTime(CommandContext context,
 			[Description("Time (or date and time) you want to convert.")]
-			DateTime datetime, 
+			DateTime datetime,
 			[Description("Name of the timezone.")]
 			string timezoneName
 		) {
