@@ -22,6 +22,12 @@ namespace Gauss.Commands {
 			this._calendar = calendar;
 		}
 
+		[Command("whatsnew")]
+		[Description("Link to the changelog, to see what functionality was recently changed or added.")]
+		public async Task WhatsNew(CommandContext context){
+			await context.RespondAsync("<https://stringepsilon.github.io/UniversityOfBots/WhatsNew.html>");
+		}
+
 		[Command("upcoming")]
 		[Aliases("nextevent")]
 		[Description("Get the next scheduled server event from the calendar.")]

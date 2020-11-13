@@ -1,5 +1,7 @@
 # Gauss - University of Bayes Discord Bot
 
+[See recent changes here.](./WhatsNew.md)
+
 ## Privacy
 
 Up to date explanations of all record keeping as it related to personal information is [explained here](./PRIVACY.md).
@@ -74,3 +76,13 @@ For example, if a user mentions /r/University_of_Bayes, Gauss will respond like 
 > Here is a clickable link: https://www.reddit.com/r/University_of_Bayes
 
 Gauss will also warn about subreddits marked as NSFW and not provide clickable links for those subreddits.
+
+### Automatic time conversion
+
+If you configured your timezone using the `settimezone` command, Gaussbot can provide a conversion of your local time to the readers timezone.
+
+To do so, simply put whatever time you want converted into square brackets. For example `I will host a game night at [20:00].`
+
+<img src="./img/time_conversion.png" />
+
+Other users will see their respective local time on the right hand side, where the screenshot says "Today at 20:00".
