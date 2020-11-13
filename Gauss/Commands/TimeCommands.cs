@@ -11,7 +11,6 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Gauss.CommandAttributes;
 using Gauss.Database;
-using Gauss.Models;
 using Gauss.Utilities;
 using NodaTime;
 

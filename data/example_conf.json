@@ -1,8 +1,10 @@
 {
-  "discord_token": "ADD TOKEN HERE.",
-  "command_prefix": "!g",
-  "assign_roles": 757276268319473806,
-  "admin_roles": [713490193407279155],
-  "voice_notification_categories": [713516226806022214],
-  "status_text": "!g help"
+	"discord_token": "ADD TOKEN HERE.",
+	"command_prefix": "!g",
+	"status_text": "!g help",
+	"logging": {
+		"filename": "logfile.txt",
+		"level": "Information",
+		"console": false
+	}
 }
