@@ -47,6 +47,7 @@ namespace Gauss.Commands {
 		}
 
 
+		[GroupCommand]
 		[Command("now")]
 		[Description("Get the current time in a given timezone.")]
 		public async Task ConvertTime(
@@ -113,12 +114,14 @@ namespace Gauss.Commands {
 		}
 
 		[Command("convert")]
+		[Hidden()]
 		public async Task ConvertTime(CommandContext context, DateTime date, DateTime time) {
 			var datetime = date.Date + time.TimeOfDay;
 			await this.ConvertTime(context, datetime);
 		}
 
 		[Command("convert")]
+		[Hidden()]
 		public async Task ConvertTime(CommandContext context, DateTime date, DateTime time, string timezoneName) {
 			var datetime = date.Date + time.TimeOfDay;
 			await this.ConvertTime(context, datetime, timezoneName);
