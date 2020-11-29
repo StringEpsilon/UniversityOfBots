@@ -20,8 +20,8 @@ using System.Threading.Tasks;
 
 namespace Gauss.Database {
 	public class CalendarAccessor {
-		static readonly string[] Scopes = { CalendarService.Scope.CalendarEvents };
-		static readonly string ApplicationName = "Gauss";
+		static readonly string[] _scopes = { CalendarService.Scope.CalendarEvents };
+		static readonly string _applicationName = "Gauss";
 		private readonly Dictionary<ulong, CalendarService> _services = new Dictionary<ulong, CalendarService>();
 		private readonly GaussConfig _config;
 		private readonly ILogger _logger;
@@ -41,7 +41,7 @@ namespace Gauss.Database {
 						string credPath = Path.Join(this._config.ConfigDirectory, "google", guildId.ToString());
 						credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
 							GoogleClientSecrets.Load(stream).Secrets,
-							Scopes,
+							_scopes,
 							"user",
 							CancellationToken.None,
 							new FileDataStore(credPath, true)).Result;
@@ -52,7 +52,7 @@ namespace Gauss.Database {
 						guildId,
 						new CalendarService(new BaseClientService.Initializer() {
 							HttpClientInitializer = credential,
-							ApplicationName = ApplicationName,
+							ApplicationName = _applicationName,
 						})
 					);
 				} catch (Exception ex) {

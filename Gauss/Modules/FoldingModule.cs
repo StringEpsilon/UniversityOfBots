@@ -136,8 +136,8 @@ namespace Gauss.Modules {
 				var monthlyStats = JObject.Parse(monthlyStatsJson);
 				stats.MonthlyRank = (int)monthlyStats.SelectToken("results[0].rank");
 				stats.RetrievalTime = DateTime.UtcNow;
-			} catch (Exception ex) {
-				throw ex;
+			} catch (Exception) {
+				throw;
 			} finally {
 				client.Dispose();
 			}
