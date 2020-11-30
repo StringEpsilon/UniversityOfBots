@@ -50,7 +50,7 @@ namespace Gauss.Commands {
 				await context.RespondAsync($"`start` must be before `end`.");
 				return;
 			}
-			if (candidateNames.Distinct().Count() != candidateNames.Count()) {
+			if (candidateNames.Distinct().Count() != candidateNames.Length) {
 				await context.RespondAsync("You have duplicate names in the candidate list.");
 				return;
 			}
@@ -125,7 +125,7 @@ namespace Gauss.Commands {
 						return;
 					}
 			}
-			if (approvals.Distinct().Count() != approvals.Count()) {
+			if (approvals.Distinct().Count() != approvals.Length) {
 				await context.RespondAsync("You must not list any candidate more than once.");
 				return;
 			}

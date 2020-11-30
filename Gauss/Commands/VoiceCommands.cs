@@ -161,7 +161,7 @@ namespace Gauss.Commands {
 				this._settings.SetVoiceSettings(config);
 
 				var dmChannel = await member.CreateDmChannelAsync();
-				if (config.TargetUsers.Count() > 0) {
+				if (config.TargetUsers.Count > 0) {
 					string userList = string.Join(", ", config.TargetUsers.Select(y => y.Username));
 					await dmChannel.SendMessageAsync($"Your {config.FilterMode} filter list consists of: {userList}");
 				} else {

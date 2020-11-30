@@ -157,7 +157,7 @@ namespace Gauss.Database {
 		public bool IsCommandDisabled(ulong guildId, string CommandName) {
 			bool result = false;
 			lock (_lock) {
-				if (this.DisabledCommands.Count() == 0) {
+				if (!DisabledCommands.Any()) {
 					result = false;
 				} else {
 					result = this.DisabledCommands.Find(guildId, CommandName) != null;

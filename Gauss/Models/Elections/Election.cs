@@ -119,7 +119,7 @@ namespace Gauss.Models.Elections {
 					.Append(candidate.Username)
 					.Append(": ")
 					.Append(candidate.Votes)
-					.Append("\n");
+					.Append('\n');
 
 				place++;
 			}

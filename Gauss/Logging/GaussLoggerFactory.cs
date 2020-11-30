@@ -13,11 +13,11 @@ namespace Gauss.Logging {
 		private readonly LogConfig _logConfig;
 
 		public GaussLoggerFactory(LogConfig logConfig) {
-			if (logConfig != null){
+			if (logConfig != null) {
 
 				this._logConfig = logConfig;
-			}else{
-				this._logConfig = new LogConfig{
+			} else {
+				this._logConfig = new LogConfig {
 					LogLevel = LogLevel.Information,
 					LogToConsole = true,
 					Filename = "log.txt",
@@ -34,6 +34,7 @@ namespace Gauss.Logging {
 		}
 
 		public void Dispose() {
+			GC.SuppressFinalize(this);
 		}
 	}
 }

@@ -19,22 +19,21 @@ namespace Gauss.Modules {
 		private readonly CalendarAccessor _calendar;
 		private readonly List<ulong> _pendingEvents = new List<ulong>();
 
-		public YAGPDBToCalendarModule(CalendarAccessor calendar, DiscordClient client)
-		{
+		public YAGPDBToCalendarModule(CalendarAccessor calendar, DiscordClient client) {
 			this._calendar = calendar;
 			client.MessageCreated += this.HandleNewMessage;
 			client.MessageUpdated += this.HandleMessageUpdate;
 		}
 
 		private Task HandleNewMessage(DiscordClient sender, MessageCreateEventArgs e) {
-			if (e.Message.Embeds.Count != 1){
+			if (e.Message.Embeds.Count != 1) {
 				return Task.CompletedTask;
 			}
 			// Only react to the bot:
-			if (e.Message.Author.Id != 204255221017214977){
+			if (e.Message.Author.Id != 204255221017214977) {
 				return Task.CompletedTask;
 			}
-			var embed = e.Message.Embeds.First();
+			var embed = e.Message.Embeds[0];
 
 			// This is a bit flaky, but so is the entire idea of bridging one bot to google calendar using another bot... ;-)
 			if (embed.Description.StartsWith("Setting up RSVP Event")) {
@@ -45,17 +44,17 @@ namespace Gauss.Modules {
 		}
 
 		private Task HandleMessageUpdate(DiscordClient sender, MessageUpdateEventArgs e) {
-			if (this._pendingEvents.Contains(e.Message.Id)){
+			if (this._pendingEvents.Contains(e.Message.Id)) {
 				Task.Run(async () => {
-					var embed = e.Message.Embeds.First();
+					var embed = e.Message.Embeds[0];
 					// Also flaky:
-					if (embed.Footer?.Text == "Event starts" && !string.IsNullOrEmpty(embed.Title)){
-						Event newEvent = new Event(){
+					if (embed.Footer?.Text == "Event starts" && !string.IsNullOrEmpty(embed.Title)) {
+						Event newEvent = new Event() {
 							Summary = embed.Title,
-							Start = new EventDateTime(){
+							Start = new EventDateTime() {
 								DateTime = embed.Timestamp.Value.UtcDateTime,
 							},
-							End = new EventDateTime(){
+							End = new EventDateTime() {
 								DateTime = embed.Timestamp.Value.UtcDateTime.AddHours(1),
 							},
 						};

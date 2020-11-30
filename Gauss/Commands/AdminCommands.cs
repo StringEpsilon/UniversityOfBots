@@ -27,7 +27,7 @@ namespace Gauss.Commands {
 		}
 
 		[Command("test")]
-		public async Task ListDisabledCommands(CommandContext context) {
+		public async Task AdminPermissionCheck(CommandContext context) {
 			await context.RespondAsync("You have permissions to execute admin commands.");
 		}
 

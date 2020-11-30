@@ -33,34 +33,33 @@ namespace Gauss.Logging {
 				return;
 			}
 			StringBuilder entryBuilder = new StringBuilder();
-			entryBuilder.Append("[")
+			entryBuilder.Append('[')
 				.Append(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
 				.Append("] [")
 				.Append(string.IsNullOrEmpty(eventId.Name) ? "     " : eventId.Name)
 				.Append("] ")
 				.Append(
-					logLevel switch 
-					{
-						LogLevel.Trace =>       "[Trace]",
-						LogLevel.Debug =>       "[Debug]",
+					logLevel switch {
+						LogLevel.Trace => "[Trace]",
+						LogLevel.Debug => "[Debug]",
 						LogLevel.Information => "[Info ]",
-						LogLevel.Warning =>     "[Warn ]",
-						LogLevel.Error =>       "[Error]",
-						LogLevel.Critical =>    "[Crit ]",
-						LogLevel.None =>        "[None ]",
-						_ =>                    "[Other]"
+						LogLevel.Warning => "[Warn ]",
+						LogLevel.Error => "[Error]",
+						LogLevel.Critical => "[Crit ]",
+						LogLevel.None => "[None ]",
+						_ => "[Other]"
 					}
 				)
-				.Append(" ")
+				.Append(' ')
 				.Append(formatter(state, exception))
-				.Append("\n");
+				.Append('\n');
 
 			if (exception != null) {
 				entryBuilder.Append(exception);
 				entryBuilder.Append("\n\n");
 			}
 
-			lock(_lock){
+			lock (_lock) {
 				if (this._logConfig.LogToConsole) {
 					Console.WriteLine(entryBuilder.ToString().Trim());
 				}

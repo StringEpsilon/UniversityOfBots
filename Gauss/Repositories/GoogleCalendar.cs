@@ -22,7 +22,7 @@ namespace Gauss.Database {
 	public class CalendarAccessor {
 		static readonly string[] _scopes = { CalendarService.Scope.CalendarEvents };
 		static readonly string _applicationName = "Gauss";
-		private readonly Dictionary<ulong, CalendarService> _services = new Dictionary<ulong, CalendarService>();
+		private readonly Dictionary<ulong, CalendarService> _services = new();
 		private readonly GaussConfig _config;
 		private readonly ILogger _logger;
 

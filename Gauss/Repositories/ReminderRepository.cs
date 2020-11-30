@@ -15,7 +15,7 @@ using NodaTime;
 namespace Gauss.Database {
 	public class ReminderRepository {
 		private readonly List<Reminder> _reminders;
-		private readonly Dictionary<ulong, DateTimeZone> _userTimezones = new Dictionary<ulong, DateTimeZone>();
+		private readonly Dictionary<ulong, DateTimeZone> _userTimezones = new();
 		private readonly string _configDirectory;
 
 		public DateTimeZone GetUserTimezone(ulong userId) {

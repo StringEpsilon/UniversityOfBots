@@ -33,13 +33,13 @@ namespace Gauss {
 	public class GaussBot {
 		private readonly DiscordClient _client;
 		private readonly GaussConfig _config;
-		private readonly List<object> _modules = new List<object>();
+		private readonly List<object> _modules = new();
 		private readonly CommandsNextExtension _commands;
 		private readonly Scheduler _scheduler;
 
 
 		public void RegisterModule(TypeInfo type, IServiceProvider services) {
-			if (type.CustomAttributes.OfType<ModuleInactiveAttribute>().Count() > 0) {
+			if (type.CustomAttributes.OfType<ModuleInactiveAttribute>().Any()) {
 				this._client.Logger.LogInformation(LogEvent.Module, $"Module '{type.Name}' is marked inactive.");
 				return;
 			}
@@ -162,7 +162,7 @@ namespace Gauss {
 									.Append(arg.IsCatchAll ? "..." : "")
 									.Append(arg.IsOptional || arg.IsCatchAll ? ']' : '>');
 								}
-								sb.Append("`");
+								sb.Append('`');
 							}
 							if (e.Context.Channel.IsPrivate) {
 								e.Context.RespondAsync($"Invalid syntax for `{e.Command.QualifiedName}`. Syntax:\n{sb}");

@@ -29,7 +29,7 @@ namespace Gauss.Modules {
 
 			return Task.Run(async () => {
 				await Task.Delay(TimeSpan.FromSeconds(10));
-				if (channel.Users.Count() == 0) {
+				if (!channel.Users.Any()) {
 					return;
 				}
 
@@ -39,12 +39,12 @@ namespace Gauss.Modules {
 				}
 				// Only alert for users who have VC notifications enabled themselves:
 				var userConfig = this._settings.GetVoiceSettings(guild.Id, user.Id);
-				if (userConfig == null){
+				if (userConfig == null) {
 					return;
 				}
 				userConfig.IsInTimeout = true;
 				var voiceUsers = this._settings.GetVoiceUsers(guild.Id);
-				foreach(var user in voiceUsers.Where(y => y.UserId != user.Id && y.CheckFilter(user.Id))){
+				foreach (var user in voiceUsers.Where(y => y.UserId != user.Id && y.CheckFilter(user.Id))) {
 					try {
 						var member = guild.Members[user.UserId];
 						var matchingStatus = member?.Presence != null && member.Presence.Status.MatchesAvailability(user.TargetStatus);
@@ -61,7 +61,7 @@ namespace Gauss.Modules {
 			});
 		}
 
-	
+
 		private void HandleLeaveVoiceChat(DiscordGuild guild, DiscordUser user, DiscordChannel channel) {
 			Task.Run(() => {
 				if (channel?.Users?.Count() == 0) {
@@ -90,11 +90,10 @@ namespace Gauss.Modules {
 				C: User disconnects from voice.
 					-> Dispatch one LeftVoiceChannel event.
 			*/
-			Console.WriteLine($"VC event - before: {e.Before?.Channel?.Name}, after: {e.After?.Channel?.Name}, channel: {e.Channel?.Name}");
-			if (e.Before?.Channel == null && e.After?.Channel != null){
+			if (e.Before?.Channel == null && e.After?.Channel != null) {
 				this.HandleJoinVoiceChat(e.Guild, e.User, e.Channel);
 			}
-			if (e.Before?.Channel != null && e.After?.Channel == null){
+			if (e.Before?.Channel != null && e.After?.Channel == null) {
 				this.HandleLeaveVoiceChat(e.Guild, e.User, e.Before.Channel);
 			}
 			return Task.CompletedTask;
