@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Gauss.Models;
 using System.Collections.Generic;
 using DSharpPlus.Entities;
+using System.IO;
 
 namespace Gauss.Database {
 
@@ -17,12 +18,20 @@ namespace Gauss.Database {
 		public DbSet<DisabledCommand> DisabledCommands { get; set; }
 		public DbSet<UserRestriction> UserRestrictions { get; set; }
 
-		public DbSet<GuildRole> AdminRoles {get;set;}
+		public DbSet<GuildRole> AdminRoles { get; set; }
 
 		private readonly object _lock = new object();
+		private readonly GaussConfig _config;
 
-		protected override void OnConfiguring(DbContextOptionsBuilder options)
-			=> options.UseSqlite("Data Source=guildsettings.db");
+		public GuildSettingsContext(GaussConfig config) {
+			this._config = config;
+
+			this.Database.EnsureCreated();
+		}
+
+		protected override void OnConfiguring(DbContextOptionsBuilder options) {
+			options.UseSqlite("Data Source=" + Path.Join(this._config.ConfigDirectory, "guildsettings.db"));
+		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.Entity<GuildRole>()
@@ -41,26 +50,22 @@ namespace Gauss.Database {
 					a.Property<int>("Id");
 					a.HasKey("Id");
 				}
-			);			
-		}
-		public GuildSettingsContext() {
-			this.Database.EnsureCreated();
+			);
 		}
 
 		#region Admin roles
-		public bool IsAdminRole(ulong guildId, IEnumerable<DiscordRole> roles){
-			if (roles == null || roles.Count() == 0){
+		public bool IsAdminRole(ulong guildId, IEnumerable<DiscordRole> roles) {
+			if (roles == null || !roles.Any()) {
 				return false;
 			}
-			lock(_lock){
-				var guildAdminRoles = from guildRole in this.AdminRoles 
-					where guildRole.GuildId == guildId 
-					select guildRole.RoleId;
+			lock (_lock) {
+				var guildAdminRoles = from guildRole in this.AdminRoles
+									  where guildRole.GuildId == guildId
+									  select guildRole.RoleId;
 
-				if (guildAdminRoles != null){
-					foreach (var role in guildAdminRoles)
-					{
-						if (roles.Any(y => y.Id == role)){
+				if (guildAdminRoles != null) {
+					foreach (var role in guildAdminRoles) {
+						if (roles.Any(y => y.Id == role)) {
 							return true;
 						}
 					}
@@ -69,27 +74,27 @@ namespace Gauss.Database {
 			return false;
 		}
 
-		public bool IsAdminRole(ulong guildId, ulong roleId){
+		public bool IsAdminRole(ulong guildId, ulong roleId) {
 			var result = false;
-			lock(_lock){
+			lock (_lock) {
 				result = this.AdminRoles.Find(guildId, roleId) != null;
 			}
 			return result;
 		}
 
 		internal void RemoveAdminRole(ulong guildId, ulong roleId) {
-			lock(_lock){
+			lock (_lock) {
 				var adminRole = this.AdminRoles.Find(guildId, roleId);
-				if (adminRole != null){
+				if (adminRole != null) {
 					this.AdminRoles.Remove(adminRole);
 					this.SaveChanges();
 				}
 			}
 		}
 
-		public void AddAdminRole(ulong guildId, ulong roleId){
-			lock(_lock){
-				this.AdminRoles.Add(new GuildRole(){GuildId = guildId, RoleId = roleId});
+		public void AddAdminRole(ulong guildId, ulong roleId) {
+			lock (_lock) {
+				this.AdminRoles.Add(new GuildRole() { GuildId = guildId, RoleId = roleId });
 				this.SaveChanges();
 			}
 		}
@@ -107,21 +112,21 @@ namespace Gauss.Database {
 			return result;
 		}
 
-		public void SetRestrictionForUser(ulong guildId, ulong userId, CommandRestriction restriction){
+		public void SetRestrictionForUser(ulong guildId, ulong userId, CommandRestriction restriction) {
 			lock (_lock) {
 				UserRestriction user = this.UserRestrictions.Find(guildId, userId);
-				if (user == null){
-					user = new UserRestriction(){
+				if (user == null) {
+					user = new UserRestriction() {
 						GuildId = guildId,
 						UserId = userId,
 					};
 					this.UserRestrictions.Add(user);
 					this.SaveChanges();
 				}
-				if (user.RestrictedCommands == null){
+				if (user.RestrictedCommands == null) {
 					user.RestrictedCommands = new List<CommandRestriction>();
-				}else{
-					if (user.RestrictedCommands.Any(x => x.CommandName == restriction.CommandName)){
+				} else {
+					if (user.RestrictedCommands.Any(x => x.CommandName == restriction.CommandName)) {
 						return;
 					}
 				}
@@ -133,13 +138,13 @@ namespace Gauss.Database {
 		}
 
 
-		public void RemoveRestrictionForUser(ulong guildId, ulong userId, CommandRestriction restriction){
+		public void RemoveRestrictionForUser(ulong guildId, ulong userId, CommandRestriction restriction) {
 			lock (_lock) {
 				UserRestriction user = this.UserRestrictions.Find(guildId, userId);
-				if (user?.RestrictedCommands == null){
+				if (user?.RestrictedCommands == null) {
 					return;
 				}
-				if (user.RestrictedCommands.Contains(restriction)){
+				if (user.RestrictedCommands.Contains(restriction)) {
 					user.RestrictedCommands.Remove(restriction);
 				}
 				this.UserRestrictions.Update(user);

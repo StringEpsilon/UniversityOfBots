@@ -1,1 +1,0 @@
-# Someone remind me to add notes from each session here.

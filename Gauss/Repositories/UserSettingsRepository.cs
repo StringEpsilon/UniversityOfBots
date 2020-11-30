@@ -8,17 +8,23 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Gauss.Models;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Gauss.Database {
 	public class UserSettingsContext : DbContext {
 		public DbSet<UserMessageSettings> UserMessageSettings { get; set; }
 		public DbSet<UserVoiceSettings> UserVoiceSettings { get; set; }
-		public IEnumerable<object> Configs { get; internal set; }
+		private readonly GaussConfig _config;
 
 		private readonly object _lock = new object();
 
+		public UserSettingsContext(GaussConfig config) {
+			this._config = config;
+			this.Database.EnsureCreated();
+		}
+
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
-			=> options.UseSqlite("Data Source=usersettings.db");
+			=> options.UseSqlite("Data Source=" + Path.Join(this._config.ConfigDirectory, "usersettings.db"));
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.Entity<UserVoiceSettings>()
@@ -28,9 +34,7 @@ namespace Gauss.Database {
 				.HasKey(e => new { e.GuildId, e.UserId });
 		}
 
-		public UserSettingsContext() {
-			this.Database.EnsureCreated();
-		}
+
 
 		public UserMessageSettings GetMessageSettings(ulong guildId, ulong userId) {
 			UserMessageSettings result;
@@ -62,14 +66,14 @@ namespace Gauss.Database {
 			return result;
 		}
 
-		public List<UserVoiceSettings> GetVoiceUsers(ulong guildId){
+		public List<UserVoiceSettings> GetVoiceUsers(ulong guildId) {
 			List<UserVoiceSettings> results = null;
 			lock (_lock) {
 				results = (from vcnsettings in this.UserVoiceSettings
-					where vcnsettings.GuildId == guildId 
-						&& vcnsettings.IsActive 
-						&& !vcnsettings.IsInTimeout
-					select vcnsettings).ToList();
+						   where vcnsettings.GuildId == guildId
+							   && vcnsettings.IsActive
+							   && !vcnsettings.IsInTimeout
+						   select vcnsettings).ToList();
 			}
 			return results;
 		}
