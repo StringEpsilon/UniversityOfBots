@@ -7,13 +7,12 @@
 using System;
 using System.IO;
 using System.Text;
-using DSharpPlus;
 using Gauss.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Gauss.Logging {
 	internal class GaussLogger : ILogger {
-		private readonly object _lock = new object();
+		private readonly object _lock = new();
 		private readonly LogConfig _logConfig;
 
 		public GaussLogger(LogConfig logConfig) {

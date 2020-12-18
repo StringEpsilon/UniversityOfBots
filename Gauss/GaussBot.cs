@@ -78,6 +78,7 @@ namespace Gauss {
 				.AddSingleton(new ReminderRepository(config.ConfigDirectory))
 				.AddSingleton(new ElectionRepository(config.ConfigDirectory))
 				.AddSingleton(this._scheduler)
+				.AddSingleton(this._client.Logger as ILogger)
 				.AddSingleton(this._config)
 				.AddSingleton(this._client)
 				.BuildServiceProvider();

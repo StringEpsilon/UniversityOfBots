@@ -55,6 +55,7 @@ namespace Gauss.Database {
 							ApplicationName = _applicationName,
 						})
 					);
+					this._logger.LogInformation($"[Calendar] Enabled calendar integration for guild {guildId}.");
 				} catch (Exception ex) {
 					this._logger.LogError(ex, $"Error setting up client for guild calendar integration. Guild ID: {guildId}");
 				}
@@ -71,6 +72,7 @@ namespace Gauss.Database {
 					this._config.GuildConfigs[guildId].CalendarId
 				);
 				await request.ExecuteAsync();
+				this._logger.LogInformation($"[Calendar] Added calendar event for {guildId}: {newEvent.Summary}.");
 				return;
 			} catch (Exception ex) {
 				this._logger.LogError(ex, $"Error while creating a new calendar event. Guild ID: {guildId}");
