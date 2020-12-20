@@ -31,7 +31,7 @@ namespace Gauss.Logging {
 			if (!this.IsEnabled(logLevel)) {
 				return;
 			}
-			StringBuilder entryBuilder = new StringBuilder();
+			StringBuilder entryBuilder = new();
 			entryBuilder.Append('[')
 				.Append(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
 				.Append("] [")

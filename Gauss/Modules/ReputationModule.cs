@@ -16,10 +16,10 @@ using Gauss.Utilities;
 namespace Gauss.Modules {
 	public class ReputationModule : BaseModule {
 		private readonly ReputationRepository _repository;
-		private readonly Regex _thanksRegex = new Regex(@"\b(thank|thanks|thx|merci|gracias|ty|tyvm)\b", RegexOptions.IgnoreCase);
-		private readonly Regex _amountRegex = new Regex(@"/s(<amount>(\+|-)?\d+)$", RegexOptions.IgnoreCase);
-		private readonly Regex _takeRepExpression = new Regex(@"^-(takerep|-|tr|trep)", RegexOptions.IgnoreCase);
-		private readonly Regex _giveRepExpression = new Regex(@"^-(giverep|gr|grep)", RegexOptions.IgnoreCase);
+		private readonly Regex _thanksRegex = new(@"\b(thank|thanks|thx|merci|gracias|ty|tyvm)\b", RegexOptions.IgnoreCase);
+		private readonly Regex _amountRegex = new(@"/s(<amount>(\+|-)?\d+)$", RegexOptions.IgnoreCase);
+		private readonly Regex _takeRepExpression = new(@"^-(takerep|-|tr|trep)", RegexOptions.IgnoreCase);
+		private readonly Regex _giveRepExpression = new(@"^-(giverep|gr|grep)", RegexOptions.IgnoreCase);
 
 
 

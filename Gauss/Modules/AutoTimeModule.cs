@@ -17,7 +17,7 @@ using NodaTime;
 namespace Gauss.Modules {
 	public class AutoTimeModule : BaseModule {
 		private readonly ReminderRepository _repository;
-		private readonly Regex _triggerExpression = new Regex(
+		private readonly Regex _triggerExpression = new(
 			@"\[(?<hour>[0-2]\d):(?<minute>[0-6]\d):?(?<second>[0-6]\d)?(?<timezone>\s?[^\]]+)?\]",
 			RegexOptions.IgnoreCase
 		);

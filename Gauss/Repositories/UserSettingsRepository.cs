@@ -16,7 +16,7 @@ namespace Gauss.Database {
 		public DbSet<UserVoiceSettings> UserVoiceSettings { get; set; }
 		private readonly GaussConfig _config;
 
-		private readonly object _lock = new object();
+		private readonly object _lock = new();
 
 		public UserSettingsContext(GaussConfig config) {
 			this._config = config;

@@ -15,7 +15,7 @@ namespace Gauss.Modules {
 	public class WelcomeModule : BaseModule {
 		private readonly GaussConfig _config;
 		private DiscordMessage _lastMessage;
-		private readonly Regex _triggerExpression = new Regex("(met gauss|meet gauss)", RegexOptions.IgnoreCase);
+		private readonly Regex _triggerExpression = new("(met gauss|meet gauss)", RegexOptions.IgnoreCase);
 
 		public WelcomeModule(DiscordClient client, GaussConfig config) {
 			client.MessageCreated += this.HandleNewMessage;
@@ -34,7 +34,7 @@ namespace Gauss.Modules {
 			if (e.Channel.IsPrivate || e.Author.IsBot) {
 				return Task.CompletedTask;
 			}
-			
+
 			return Task.Run(async () => {
 				if (!this._config.GuildConfigs.TryGetValue(e.Guild.Id, out GuildConfig guildConfig)) {
 					return;

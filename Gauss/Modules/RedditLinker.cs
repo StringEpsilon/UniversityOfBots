@@ -26,8 +26,8 @@ namespace Gauss.Modules {
 			return Task.Run(async () => {
 				var redditRegex = new Regex(@"(?<!^>)((?:^|\s)\/?r\/\w{2,21}\b)", RegexOptions.Multiline);
 				var redditMatches = redditRegex.Matches(e.Message.Content);
-				List<string> validSubs = new List<string>();
-				List<string> nsfwSubs = new List<string>();
+				List<string> validSubs = new();
+				List<string> nsfwSubs = new();
 				bool addShrug = false;
 				foreach (Match match in redditMatches) {
 					if (match.Groups.Count >= 1) {

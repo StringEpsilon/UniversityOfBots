@@ -42,7 +42,7 @@ namespace Gauss.Commands {
 		[Command("remindme")]
 		public async Task SetReminder(CommandContext context, DateTime datetime, [RemainingText] string message = "") {
 			var zonedDateTime = datetime.InTimeZone(this._repository.GetUserTimezone(context.User.Id));
-			Reminder reminder = new Reminder(zonedDateTime, message, context.User.Id);
+			Reminder reminder = new(zonedDateTime, message, context.User.Id);
 			this._repository.AddReminder(reminder);
 			await context.RespondAsync(embed: reminder.CreateEmbed());
 			return;
@@ -52,7 +52,7 @@ namespace Gauss.Commands {
 		public async Task SetReminder(CommandContext context, DateTime date, DateTime time, [RemainingText] string message = "") {
 			var datetime = date.Date + time.TimeOfDay;
 			var zonedDateTime = datetime.InTimeZone(this._repository.GetUserTimezone(context.User.Id));
-			Reminder reminder = new Reminder(zonedDateTime, message, context.User.Id);
+			Reminder reminder = new(zonedDateTime, message, context.User.Id);
 			this._repository.AddReminder(reminder);
 			await context.RespondAsync(embed: reminder.CreateEmbed());
 			return;
@@ -133,7 +133,7 @@ namespace Gauss.Commands {
 				return;
 			}
 
-			Reminder reminder = new Reminder(dueAt, message, context.User.Id);
+			Reminder reminder = new(dueAt, message, context.User.Id);
 			this._repository.AddReminder(reminder);
 			await context.RespondAsync(embed: reminder.CreateEmbed());
 		}

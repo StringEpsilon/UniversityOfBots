@@ -57,7 +57,7 @@ namespace Gauss.Commands {
 
 			var guild = context.GetGuild();
 
-			List<Candidate> candidates = new List<Candidate>();
+			List<Candidate> candidates = new();
 			candidates = candidateNames.Select((item, index) => new Candidate {
 				Option = char.ConvertFromUtf32(65 + index),
 				UserId = item.Id,
@@ -131,7 +131,7 @@ namespace Gauss.Commands {
 			}
 
 			var election = _pollRepository.GetElection(guild.Id, electionId);
-			List<Candidate> candidates = new List<Candidate>();
+			List<Candidate> candidates = new();
 			foreach (var item in approvals) {
 				Candidate foundCandidate = null;
 				if (item.Length == 1) {

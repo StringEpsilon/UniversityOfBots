@@ -20,7 +20,7 @@ namespace Gauss.Database {
 
 		public DbSet<GuildRole> AdminRoles { get; set; }
 
-		private readonly object _lock = new object();
+		private readonly object _lock = new();
 		private readonly GaussConfig _config;
 
 		public GuildSettingsContext(GaussConfig config) {

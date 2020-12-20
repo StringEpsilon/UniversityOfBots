@@ -17,8 +17,8 @@ namespace Gauss.Scheduling {
 	public class Scheduler {
 		private readonly List<IScheduledTask> _tasks;
 
-		private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
-		private readonly object _lock = new object();
+		private readonly CancellationTokenSource _cancellationToken = new();
+		private readonly object _lock = new();
 
 		public Scheduler(DiscordClient client) {
 			this._tasks = new List<IScheduledTask>();
