@@ -75,5 +75,19 @@ namespace Gauss.Database {
 		public void TakeRep(ulong guildId, ulong userId, int amount = 1) {
 			this.GiveRep(guildId, userId, amount * -1);
 		}
+
+		public Dictionary<ulong, int> GetCurrentScores(ulong id) {
+			if (this._reputation.ContainsKey(id)) {
+				return this._reputation[id].GetMonthData(DateTime.UtcNow);
+			}
+			return null;
+		}
+
+		public Dictionary<ulong, int> GetMonthlyScores(ulong id, DateTime month) {
+			if (this._reputation.ContainsKey(id)) {
+				return this._reputation[id].GetMonthData(month);
+			}
+			return null;
+		}
 	}
 }

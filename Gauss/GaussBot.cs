@@ -109,6 +109,7 @@ namespace Gauss {
 			this._commands.RegisterCommands<FoldingCommands>();
 			this._commands.RegisterCommands<ElectionCommands>();
 			this._commands.RegisterCommands<RemindMeCommands>();
+			this._commands.RegisterCommands<ReputationCommands>();
 			this._commands.RegisterCommands<TimeCommands>();
 
 			// Register all internal "modules" that handle non-command tasks:
