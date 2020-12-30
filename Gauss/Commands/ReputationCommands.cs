@@ -27,6 +27,36 @@ namespace Gauss.Commands {
 			this._reputationRepository = reputationRepository;
 		}
 
+		[Command("givereputation")]
+		[Disabled]
+		[Aliases("giverep")]
+		public async Task GiveReputation(CommandContext context, DiscordMember member, int amount) {
+			if (Math.Abs(amount) > 5) {
+				await context.RespondAsync("Can't give more than 5 points at once.");
+				return;
+			}
+			if (member == context.User) {
+				await context.RespondAsync("You're not allowed to give reputation to yourself.");
+				return;
+			}
+
+			var guildId = context.GetGuild().Id;
+			_reputationRepository.GiveRep(guildId, member.Id, amount);
+			(int points, int rank) = _reputationRepository.GetRank(guildId, member.Id);
+			if (amount >= 0) {
+				await context.RespondAsync($"Gave `{amount}` Bayes points to **{member.DisplayName}**. Currently `#{rank}: {points}`.");
+			} else {
+				await context.RespondAsync($"Took `{amount}` Bayes points from **{member.DisplayName}**. Currently `#{rank}: {points}`.");
+			}
+		}
+
+		[Command("takereputation")]
+		[Disabled]
+		[Aliases("takerep")]
+		public async Task TakeReputation(CommandContext context, DiscordMember member, int amount) {
+			await this.GiveReputation(context, member, amount * -1);
+		}
+
 		[Command("leaderboard")]
 		[Description("Gives a leaderboard of bayes points for the given month.")]
 		public async Task GetLeaderBoardByMonth(
@@ -36,7 +66,7 @@ namespace Gauss.Commands {
 		) {
 			var scores = this._reputationRepository.GetMonthlyScores(context.Guild.Id, yearMonth);
 			if (scores == null) {
-				await context.RespondAsync("No reputation data available this month.");
+				await context.RespondAsync($"No reputation data available for {yearMonth:MMMM yyyy}.");
 				return;
 			}
 			var guild = context.GetGuild();

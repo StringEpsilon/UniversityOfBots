@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Gauss.Utilities;
 
 namespace Gauss.Database {
@@ -33,6 +34,17 @@ namespace Gauss.Database {
 				currentData.Add(userId, 0);
 			}
 			currentData[userId] += amount;
+		}
+
+		public int this[ulong userId] {
+			get {
+				var result = 0;
+				var currentData = this.GetMonthData(DateTime.UtcNow, create: false);
+				if (currentData?.ContainsKey(userId) == true) {
+					result = currentData[userId];
+				}
+				return result;
+			}
 		}
 	}
 
@@ -61,6 +73,43 @@ namespace Gauss.Database {
 				this._reputation[guildId].AddReputation(userId, amount);
 				this.SaveChanges();
 			}
+		}
+
+		public int GetRep(ulong guildId, ulong userId) {
+			lock (this._reputation) {
+				if (this._reputation.ContainsKey(guildId)) {
+					return this._reputation[guildId][userId];
+				}
+				return 0;
+			}
+		}
+
+		public (int points, int rank) GetRank(ulong guildId, ulong userId) {
+			var result = (0, 0);
+			lock (this._reputation) {
+				if (this._reputation.ContainsKey(guildId)) {
+					var sortedScores = this.GetCurrentScores(guildId).OrderByDescending(y => y.Value);
+
+					List<string> lines = new();
+					int rank = 0;
+					int rankbuffer = 1;
+					int previousScore = 0;
+					foreach (var entry in sortedScores) {
+						if (entry.Value != previousScore) {
+							rank += rankbuffer;
+							rankbuffer = 1;
+						} else {
+							rankbuffer++;
+						}
+						previousScore = entry.Value;
+						if (entry.Key == userId) {
+							result = (entry.Value, rank);
+							break;
+						}
+					}
+				}
+			}
+			return result;
 		}
 
 		private void SaveChanges() {
