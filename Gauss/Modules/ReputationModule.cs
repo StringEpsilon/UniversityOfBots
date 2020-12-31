@@ -4,10 +4,13 @@
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
 **/
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Gauss.Database;
@@ -16,19 +19,24 @@ using Gauss.Utilities;
 namespace Gauss.Modules {
 	public class ReputationModule : BaseModule {
 		private readonly ReputationRepository _repository;
-		private readonly Regex _thanksRegex = new(@"\b(thank|thanks|thx|merci|gracias|ty|tyvm)\b", RegexOptions.IgnoreCase);
+		private readonly Regex _thanksRegex = new(@"(?<!^>)\b(thank|thanks|thx|merci|gracias|ty|tyvm)\b", RegexOptions.IgnoreCase);
 		private readonly Regex _amountRegex = new(@"/s(<amount>(\+|-)?\d+)$", RegexOptions.IgnoreCase);
 		private readonly Regex _takeRepExpression = new(@"^-(takerep|-|tr|trep)", RegexOptions.IgnoreCase);
 		private readonly Regex _giveRepExpression = new(@"^-(giverep|gr|grep)", RegexOptions.IgnoreCase);
-
-
+		private readonly Regex _topRepExpression = new(@"^-(toprep)", RegexOptions.IgnoreCase);
 
 		public ReputationModule(DiscordClient client, ReputationRepository repository) {
 			this._repository = repository;
 			client.MessageCreated += this.HandleNewMessage;
 		}
 
-		private (DiscordMember, int) GetParameters(MessageCreateEventArgs e) {
+		private static List<ulong> GetMentionedUsers(string message) {
+			var regex = new Regex(@"(?:<@!)(\d+)(?:>)");
+			var matches = regex.Matches(message);
+			return matches.Select(match => ulong.Parse(match.Groups[1].Value)).ToList();
+		}
+
+		private (DiscordUser, int) GetParameters(MessageCreateEventArgs e) {
 			var username = e.Message.Content.Substring(e.Message.Content.IndexOf(" ") + 1);
 			var amountRaw = _amountRegex.Match(username)?.Groups["amount"].Value;
 			if (!int.TryParse(amountRaw, out int amount)) {
@@ -37,9 +45,13 @@ namespace Gauss.Modules {
 			if (amount > 5) {
 				return (null, 0);
 			}
-			var member = e.Guild.FindMember(username);
+			var member = (DiscordUser)e.Guild.FindMember(username);
 			if (member == null || member.Id == e.Author.Id) {
-				return (null, 0);
+				if (e.MentionedUsers.Count == 1) {
+					member = e.MentionedUsers[0];
+				} else {
+					return (null, 0);
+				}
 			}
 			return (member, amount);
 		}
@@ -49,31 +61,50 @@ namespace Gauss.Modules {
 				return Task.CompletedTask;
 			}
 			return Task.Run(() => {
-				var message = e.Message.Content;
-				if (_takeRepExpression.IsMatch(e.Message.Content)) {
+
+				var message = new Regex(@"^>.+").Replace(e.Message.Content, "");
+				if (_takeRepExpression.IsMatch(message)) {
 					var (member, amount) = this.GetParameters(e);
 					if (member != null) {
 						this._repository.TakeRep(e.Guild.Id, member.Id, amount);
+						var (points, rank) = _repository.GetRank(e.Guild.Id, member.Id);
+						e.Channel.SendMessageAsync($"Took `{amount}` Bayes Points from **{member.Username}**. Currently `#{rank}: {points}`.");
 					}
 					return;
-				}
-				if (_giveRepExpression.IsMatch(e.Message.Content)) {
+				} else if (_giveRepExpression.IsMatch(message)) {
 					var (member, amount) = this.GetParameters(e);
 					if (member != null) {
 						this._repository.GiveRep(e.Guild.Id, member.Id, amount);
+						var (points, rank) = _repository.GetRank(e.Guild.Id, member.Id);
+						e.Channel.SendMessageAsync($"Gave `{amount}` Bayes Points to **{member.Username}**. Currently `#{rank}: {points}`.");
 					}
 					return;
+				} else if (_topRepExpression.IsMatch(message)) {
+					var commandsNext = client.GetCommandsNext();
+					var context = commandsNext.CreateFakeContext(e.Author, e.Channel, "leaderboard", "!g", commandsNext.FindCommand("leaderboard", out _));
+					commandsNext.ExecuteCommandAsync(context);
 				}
 
-				if (_thanksRegex.IsMatch(e.Message.Content)) {
-					int count = 0;
-					int limit = 5; // emulate the CLYDE limit on mentions processed for each give rep.
-					foreach (var user in e.Message.MentionedUsers.Distinct()) {
-						this._repository.GiveRep(e.Guild.Id, user.Id);
-						count++;
-						if (count >= limit) {
-							return;
-						}
+				if (_thanksRegex.IsMatch(message)) {
+					var mentionedUsers = GetMentionedUsers(message).Distinct();
+					IEnumerable<DiscordMember> awardedMembers = mentionedUsers
+						.Where(y => y != e.Author.Id)
+						.Select(y => e.Guild.Members[y]);
+
+					foreach (var member in awardedMembers) {
+						this._repository.GiveRep(e.Guild.Id, member.Id);
+					}
+					if (awardedMembers.Count() <= 4) {
+						int points;
+						int rank;
+						var replyLines = awardedMembers.Select(y => {
+							(points, rank) = _repository.GetRank(e.Guild.Id, y.Id);
+
+							return $"Gave `1` Bayes Point to **{y.DisplayName}**. Currently `#{rank}: {points}`.";
+						});
+						e.Channel.SendMessageAsync(string.Join("\n", replyLines));
+					} else {
+						e.Channel.SendMessageAsync($"Gave `1` Bayes Point each to: {string.Join(", ", awardedMembers.Select(y => y.DisplayName))}");
 					}
 				}
 			});

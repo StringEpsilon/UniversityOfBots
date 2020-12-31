@@ -28,11 +28,11 @@ namespace Gauss.Commands {
 		}
 
 		[Command("givereputation")]
-		[Disabled]
+		[Description("Give bayes points to a user.")]
 		[Aliases("giverep")]
 		public async Task GiveReputation(CommandContext context, DiscordMember member, int amount) {
 			if (Math.Abs(amount) > 5) {
-				await context.RespondAsync("Can't give more than 5 points at once.");
+				await context.RespondAsync("Can't give or take more than 5 points at once.");
 				return;
 			}
 			if (member == context.User) {
@@ -44,21 +44,43 @@ namespace Gauss.Commands {
 			_reputationRepository.GiveRep(guildId, member.Id, amount);
 			(int points, int rank) = _reputationRepository.GetRank(guildId, member.Id);
 			if (amount >= 0) {
-				await context.RespondAsync($"Gave `{amount}` Bayes points to **{member.DisplayName}**. Currently `#{rank}: {points}`.");
+				await context.RespondAsync($"Gave `{amount}` Bayes Points to **{member.DisplayName}**. Currently `#{rank}: {points}`.");
 			} else {
-				await context.RespondAsync($"Took `{amount}` Bayes points from **{member.DisplayName}**. Currently `#{rank}: {points}`.");
+				await context.RespondAsync($"Took `{amount}` Bayes Points from **{member.DisplayName}**. Currently `#{rank}: {points}`.");
 			}
 		}
 
 		[Command("takereputation")]
-		[Disabled]
+		[Description("Take Bayes Points away from a user.")]
 		[Aliases("takerep")]
-		public async Task TakeReputation(CommandContext context, DiscordMember member, int amount) {
+		public async Task TakeReputation(CommandContext context, DiscordMember member, int amount = 1) {
 			await this.GiveReputation(context, member, amount * -1);
 		}
 
+		[Command("getreputation")]
+		[Aliases("rep", "reputation")]
+		[Description("Get the current Bayes Points of a user")]
+		public async Task GetReputation(CommandContext context, DiscordMember member) {
+			(int points, int rank) = _reputationRepository.GetRank(context.GetGuild().Id, member.Id);
+			if (points == 0) {
+				await context.RespondAsync($"**{member.DisplayName}** doesn't have any points yet :(");
+				return;
+			}
+			await context.RespondAsync($"**{member.DisplayName}**: `{points}` Bayes Points (#{rank}).");
+		}
+
+
+		[Command("getreputation")]
+		[Description("Get your current Bayes Points.")]
+		public async Task GetReputation(CommandContext context) {
+			if (context.Member != null) {
+				await this.GetReputation(context, context.Member);
+			}
+		}
+
 		[Command("leaderboard")]
-		[Description("Gives a leaderboard of bayes points for the given month.")]
+		[Aliases("toprep")]
+		[Description("Get the leaderboard of Bayes Points for the given month.")]
 		public async Task GetLeaderBoardByMonth(
 			CommandContext context,
 			[Description("Month you want to see, in format YYYY-MM (e.g. 2021-01).")]
@@ -112,7 +134,7 @@ namespace Gauss.Commands {
 		}
 
 		[Command("leaderboard")]
-		[Description("Gives a leaderboard of bayes points for current month.")]
+		[Description("Gives a leaderboard of Bayes Points for current month.")]
 		public async Task GetCurrentLeaderboard(CommandContext context) {
 			await this.GetLeaderBoardByMonth(context, DateTime.UtcNow);
 		}
