@@ -1,4 +1,13 @@
-`!g leaderboard`, `!g givereputation`, `!g takereputation` and `!g getreputation`
+[Back to overview](../README.md)
+
+---
+
+## Commands for using Bayes Points:
+
+- [leaderboard](#leaderboard)
+- [givereputation](#givereputation)
+- [takereputation](#takereputation)
+- [getreputation](#getreputation)
 
 ### leaderboard
 
@@ -6,15 +15,9 @@
 
 **Parameters**:
 
-| name      | format  | default       | description                                  |
-| --------- | ------- | ------------- | -------------------------------------------- |
-| yearMonth | yyyy-mm | current month | Specify a month to show the leaderboard for. |
-
-**Aliases**: _none_
-
-**Examples**:
-`!g leaderboard` - Show the current scores.
-`!g leaderboard 2020-12` - Show the scores as per december 2020.
+| name      | format  | default       | description                  |
+| --------- | ------- | ------------- | ---------------------------- |
+| yearMonth | yyyy-mm | current month | Specify a moovercember 2020. |
 
 ---
 
