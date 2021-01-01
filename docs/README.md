@@ -10,10 +10,10 @@ Up to date explanations of all record keeping as it related to personal informat
 
 You can use any command in one of three ways:
 
-1) Send a message starting with the `!g` prefix, followed by the command name:
-    `!g help`
-2) @mention the bot, directly followed by the command name: `@Gauss help`
-3) DM the bot directly with the command name: `help`
+1. Send a message starting with the `!g` prefix, followed by the command name:
+   `!g help`
+2. @mention the bot, directly followed by the command name: `@Gauss help`
+3. DM the bot directly with the command name: `help`
 
 ## Available commands
 
@@ -36,6 +36,10 @@ You can access moderation options through various `admin` commands.
 ### [election](./election/README.md)
 
 Creating and voting in elections.
+
+### [reputation](./reputation/README.md)
+
+Tracking, giving and taking away Bayes Points.
 
 ### [Miscellaneous commands](./misc/README.md)
 

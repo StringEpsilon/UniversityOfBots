@@ -28,6 +28,10 @@ For reminders, the bot will store your user ID, the desired time of the reminder
 
 If you set your timezone via `!g settimezone`, the bot will also store that.
 
+**4. Reputation**
+
+Also known as Bayes Points. The Bot stores a simple table of month, user ID and score. Access to the whole of that information is possible through the `!g leaderboard` command.
+
 ## Messages and command usage
 
 Gauss will not keep any record of messages send to it via DMs or in channels it has access to.

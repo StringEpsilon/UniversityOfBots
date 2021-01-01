@@ -1,5 +1,10 @@
 # Whats new
 
+## 2021-01-01
+
+- Added reputation tracking via "Thank you <@Mention>"
+- Added `!g leaderboard`, `!g givereputation`, `!g takereputation` and `!g getreputation`
+
 ## 2020-11-14
 
 - Added documentation for `!g time convert`
@@ -11,4 +16,3 @@
 - Added `!g whatsnew` to link to this document.
 - Renamed `!g now` to `!g time now`
 - Renamed `!g converttime` to `!g time convert`
-- Added user documentation for `!g time now`

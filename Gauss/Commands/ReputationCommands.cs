@@ -30,7 +30,7 @@ namespace Gauss.Commands {
 		[Command("givereputation")]
 		[Description("Give bayes points to a user.")]
 		[Aliases("giverep")]
-		public async Task GiveReputation(CommandContext context, DiscordMember member, int amount) {
+		public async Task GiveReputation(CommandContext context, DiscordMember member, int amount = 1) {
 			if (Math.Abs(amount) > 5) {
 				await context.RespondAsync("Can't give or take more than 5 points at once.");
 				return;
@@ -71,6 +71,7 @@ namespace Gauss.Commands {
 
 
 		[Command("getreputation")]
+		[Aliases("getrep")]
 		[Description("Get your current Bayes Points.")]
 		public async Task GetReputation(CommandContext context) {
 			if (context.Member != null) {
