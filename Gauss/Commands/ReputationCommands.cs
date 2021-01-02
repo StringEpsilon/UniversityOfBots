@@ -46,7 +46,7 @@ namespace Gauss.Commands {
 			if (amount >= 0) {
 				await context.RespondAsync($"Gave `{amount}` Bayes Points to **{member.DisplayName}**. Currently `#{rank}: {points}`.");
 			} else {
-				await context.RespondAsync($"Took `{amount}` Bayes Points from **{member.DisplayName}**. Currently `#{rank}: {points}`.");
+				await context.RespondAsync($"Took `{amount * -1}` Bayes Points from **{member.DisplayName}**. Currently `#{rank}: {points}`.");
 			}
 		}
 

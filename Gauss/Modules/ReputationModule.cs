@@ -4,13 +4,11 @@
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
 **/
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DSharpPlus;
-using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Gauss.Database;
@@ -61,28 +59,17 @@ namespace Gauss.Modules {
 				return Task.CompletedTask;
 			}
 			return Task.Run(() => {
-
 				var message = new Regex(@"^>.+").Replace(e.Message.Content, "");
 				if (_takeRepExpression.IsMatch(message)) {
 					var (member, amount) = this.GetParameters(e);
-					if (member != null) {
-						this._repository.TakeRep(e.Guild.Id, member.Id, amount);
-						var (points, rank) = _repository.GetRank(e.Guild.Id, member.Id);
-						e.Channel.SendMessageAsync($"Took `{amount}` Bayes Points from **{member.Username}**. Currently `#{rank}: {points}`.");
-					}
+					client.ExecuteCommand(e.Channel, e.Author, "takereputation", member?.Mention, amount.ToString());
 					return;
 				} else if (_giveRepExpression.IsMatch(message)) {
 					var (member, amount) = this.GetParameters(e);
-					if (member != null) {
-						this._repository.GiveRep(e.Guild.Id, member.Id, amount);
-						var (points, rank) = _repository.GetRank(e.Guild.Id, member.Id);
-						e.Channel.SendMessageAsync($"Gave `{amount}` Bayes Points to **{member.Username}**. Currently `#{rank}: {points}`.");
-					}
+					client.ExecuteCommand(e.Channel, e.Author, "givereputation", member?.Mention, amount.ToString());
 					return;
 				} else if (_topRepExpression.IsMatch(message)) {
-					var commandsNext = client.GetCommandsNext();
-					var context = commandsNext.CreateFakeContext(e.Author, e.Channel, "leaderboard", "!g", commandsNext.FindCommand("leaderboard", out _));
-					commandsNext.ExecuteCommandAsync(context);
+					client.ExecuteCommand(e.Channel, e.Author, "leaderboard");
 				}
 
 				if (_thanksRegex.IsMatch(message)) {
