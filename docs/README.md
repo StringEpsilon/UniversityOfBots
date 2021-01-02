@@ -90,3 +90,13 @@ To do so, simply put whatever time you want converted into square brackets. For 
 <img src="./img/time_conversion.png" />
 
 Other users will see their respective local time on the right hand side, where the screenshot says "Today at 20:00".
+
+### Automatic reputation.
+
+In addition to the `givereputation` command, Gauss also looks for certain keywords in a message along with an @Mention to award reputation points. Currently these keywords are:
+
+`thank thanks thx merci gracias ty tyvm`
+
+So `Thank you @Gauss!` would give Gauss 1 Bayes Point of reputation.
+
+Quoted parts of a message are ignored. There is also no limit to the number of people you can thank this way.
