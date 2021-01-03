@@ -8,7 +8,6 @@ using System;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
 using Gauss.CommandAttributes;
 using Gauss.Database;
 using Gauss.Models;
@@ -40,6 +39,7 @@ namespace Gauss.Commands {
 		}
 
 		[Command("remindme")]
+		[Priority(10)]
 		public async Task SetReminder(CommandContext context, DateTime datetime, [RemainingText] string message = "") {
 			var zonedDateTime = datetime.InTimeZone(this._repository.GetUserTimezone(context.User.Id));
 			Reminder reminder = new(zonedDateTime, message, context.User.Id);
@@ -49,6 +49,7 @@ namespace Gauss.Commands {
 		}
 
 		[Command("remindme")]
+		[Priority(100)]
 		public async Task SetReminder(CommandContext context, DateTime date, DateTime time, [RemainingText] string message = "") {
 			var datetime = date.Date + time.TimeOfDay;
 			var zonedDateTime = datetime.InTimeZone(this._repository.GetUserTimezone(context.User.Id));
@@ -59,6 +60,7 @@ namespace Gauss.Commands {
 		}
 
 		[Command("remindme")]
+		[Priority(90)]
 		public async Task SetReminder(CommandContext context, string day, DateTime time, [RemainingText] string message = "") {
 			ZonedDateTime zonedDateTime;
 			var timezone = this._repository.GetUserTimezone(context.User.Id);
