@@ -41,6 +41,10 @@ Creating and voting in elections.
 
 Tracking, giving and taking away Bayes Points.
 
+### [remindme](./remindme/README.md)
+
+Setting up reminders for yourself.
+
 ### [Miscellaneous commands](./misc/README.md)
 
 Other commands that don't fit neatly into their own grouping.

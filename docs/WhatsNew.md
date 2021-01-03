@@ -1,5 +1,10 @@
 # Whats new
 
+## 2021-01-03
+
+- Fixed an issue with `!g remindme <date> <time> <text>`
+- Added documentation for `remindme`
+
 ## 2021-01-01
 
 - Added reputation tracking via "Thank you <@Mention>"
