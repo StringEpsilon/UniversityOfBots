@@ -29,7 +29,7 @@ namespace Gauss.Modules {
 		}
 
 		private static List<ulong> GetMentionedUsers(string message) {
-			var regex = new Regex(@"(?:<@!)(\d+)(?:>)");
+			var regex = new Regex(@"(?:<@!?)(\d+)(?:>)");
 			var matches = regex.Matches(message);
 			return matches.Select(match => ulong.Parse(match.Groups[1].Value)).ToList();
 		}
