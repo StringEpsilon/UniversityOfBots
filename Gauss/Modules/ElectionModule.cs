@@ -5,6 +5,7 @@ using Gauss.Models;
 using Gauss.Database;
 using Gauss.Scheduling;
 using Microsoft.Extensions.Logging;
+using DSharpPlus.Entities;
 
 namespace Gauss.Modules {
 	/// <summary>
@@ -32,7 +33,7 @@ namespace Gauss.Modules {
 			// Setup the UpdateElections function to run in the general scheduler:
 			this._scheduler.AddTask(
 				new TaskThunk(
-					this.ShouldUpdateElections, 
+					this.ShouldUpdateElections,
 					this.UpdateElections
 				)
 			);
@@ -49,7 +50,7 @@ namespace Gauss.Modules {
 
 			foreach (var election in activeElections) {
 				var voteChannelId = this._config.GuildConfigs[election.GuildId].VoteChannel;
-				if (voteChannelId == 0){
+				if (voteChannelId == 0) {
 					this._client.Logger.LogError("Posting election failed: No vote channel specified.");
 					break;
 				}
@@ -64,15 +65,16 @@ namespace Gauss.Modules {
 					}
 				} else {
 					if (election.End <= DateTime.UtcNow) {
-						if (_repository.CloseElection(election, this._client)){
-							DSharpPlus.Entities.DiscordChannel voteChannel = this._client
+						if (_repository.CloseElection(election, this._client)) {
+							DiscordChannel voteChannel = this._client
 								.Guilds[election.GuildId]
 								.Channels[voteChannelId];
-							
-							await voteChannel.SendFileAsync(
-								_repository.GetAuditLogPath(election),
-								$"Election #{election.ID} for {election.Title} has concluded. Results:\n{election.GetResults()}"
-							);
+
+							DiscordMessageBuilder builder = new DiscordMessageBuilder()
+								.WithFile(_repository.GetAuditLogPath(election))
+								.WithContent($"Election #{election.ID} for {election.Title} has concluded. Results:\n{election.GetResults()}");
+
+							await voteChannel.SendMessageAsync(builder);
 						}
 					}
 				}

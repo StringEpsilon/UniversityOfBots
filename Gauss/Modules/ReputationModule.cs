@@ -74,6 +74,9 @@ namespace Gauss.Modules {
 
 				if (_thanksRegex.IsMatch(message)) {
 					var mentionedUsers = GetMentionedUsers(message).Distinct();
+					if (e.Message.Reference != null) {
+						mentionedUsers = mentionedUsers.Append(e.Message.Reference.Message.Author.Id);
+					}
 					IEnumerable<DiscordMember> awardedMembers = mentionedUsers
 						.Where(y => y != e.Author.Id)
 						.Select(y => e.Guild.Members[y]);

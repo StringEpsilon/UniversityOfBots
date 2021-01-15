@@ -77,7 +77,7 @@ namespace Gauss.Utilities {
 				.WithFooter($"{_confirmEmoji} to confirm, {_abortEmoji} to abort.")
 				.Build();
 
-			DiscordMessage botMessage = await context.RespondAsync(null, false, embed);
+			DiscordMessage botMessage = await context.RespondAsync(embed);
 
 			await botMessage.CreateReactionAsync(_confirmEmoji);
 			await Task.Delay(250);
