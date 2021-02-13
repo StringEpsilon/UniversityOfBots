@@ -3,7 +3,8 @@
   License, v. 2.0. If a copy of the MPL was not distributed with this
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
 **/
-
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -24,7 +25,7 @@ namespace Gauss.Commands {
 
 		[Command("whatsnew")]
 		[Description("Link to the changelog, to see what functionality was recently changed or added.")]
-		public async Task WhatsNew(CommandContext context){
+		public async Task WhatsNew(CommandContext context) {
 			await context.RespondAsync("<https://stringepsilon.github.io/UniversityOfBots/WhatsNew.html>");
 		}
 
@@ -59,6 +60,21 @@ namespace Gauss.Commands {
 		public async Task GetPrivacyInfo(CommandContext context) {
 			await context.RespondAsync("You can find up to date privacy information in the link below.\n" +
 				"<https://stringepsilon.github.io/UniversityOfBots/PRIVACY>\n");
+		}
+
+		[Description("Get an invite link to the current server.")]
+		[Command("invite")]
+		public async Task GetInvite(CommandContext context) {
+			try {
+				var invites = await context.Channel.Guild.GetInvitesAsync();
+				var invite = invites
+					.OrderByDescending(y => y.Uses)
+					.FirstOrDefault(y => y.IsTemporary == false && y.IsRevoked == false && y.MaxAge == 0 && y.MaxUses == 0);
+				if (invite != null) {
+					await context.RespondAsync($"Here is your invite link: <https://discord.gg/{invite.Code}>");
+				}
+			} catch (Exception) {
+			}
 		}
 	}
 }
