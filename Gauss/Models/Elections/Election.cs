@@ -47,6 +47,8 @@ namespace Gauss.Models.Elections {
 		/// </summary>
 		public List<Candidate> Candidates { get; set; }
 
+		public List<Ballot> Ballots { get; set; }
+
 		/// <summary>
 		/// List of users (by ID) who voted in the election.
 		/// </summary>
