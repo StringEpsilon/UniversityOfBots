@@ -21,14 +21,33 @@ namespace Gauss.Commands {
 	[Description("Group of commands to manage your voice chat notification settings.")]
 	public class AdminCommands : BaseCommandModule {
 		private readonly GuildSettingsContext _context;
+		private readonly GaussConfig _config;
 
-		public AdminCommands(GuildSettingsContext dbContext) {
+
+		public AdminCommands(GuildSettingsContext dbContext, GaussConfig config) {
 			this._context = dbContext;
+			this._config = config;
 		}
 
 		[Command("test")]
 		public async Task AdminPermissionCheck(CommandContext context) {
 			await context.RespondAsync("You have permissions to execute admin commands.");
+		}
+
+		[Command("vc_name")]
+		public async Task SetVCDefaultName(CommandContext context, ulong channelId, [RemainingText] string name) {
+			var guildConfig = this._config.GuildConfigs[context.GetGuild().Id];
+			if (guildConfig.VoiceChannelNames == null) {
+				guildConfig.VoiceChannelNames = new();
+			}
+
+			if (guildConfig.VoiceChannelNames?.ContainsKey(channelId) == false) {
+				guildConfig.VoiceChannelNames.Add(channelId, name);
+			} else {
+				guildConfig.VoiceChannelNames[channelId] = name;
+			}
+			this._config.Save();
+			await context.RespondAsync($"Set the default channel name to '{name}'");
 		}
 
 		[Command("addrole")]

@@ -41,6 +41,9 @@ namespace Gauss.Models {
 
 		[JsonProperty("calendar_id")]
 		public string CalendarId { get; set; }
+
+		[JsonProperty("vc_names")]
+		public Dictionary<ulong, string> VoiceChannelNames { get; set; }
 	}
 
 	public class GaussConfig {
