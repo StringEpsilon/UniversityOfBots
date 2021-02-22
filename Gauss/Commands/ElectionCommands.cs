@@ -39,6 +39,8 @@ namespace Gauss.Commands {
 			DateTime start,
 			[Description("Planned end of the election (UTC).")]
 			DateTime end,
+			[Description("Number of seats / winners.")]
+			int seats,
 			[Description("List of candidates.")]
 			params DiscordUser[] candidateNames
 		) {
@@ -62,9 +64,9 @@ namespace Gauss.Commands {
 				Option = char.ConvertFromUtf32(65 + index),
 				UserId = item.Id,
 				Username = item.Username + "#" + item.Discriminator,
-				Votes = 0,
 			}).ToList();
 			var election = new Election() {
+				Seats = seats,
 				Candidates = candidates,
 				Title = title,
 				Start = start.ToUniversalTime(),
