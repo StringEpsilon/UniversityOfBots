@@ -147,7 +147,7 @@ namespace Gauss {
 						break;
 					}
 				case ArgumentException argumentException: {
-						if (e.Command != null) {
+						if (e.Command != null && e.Exception.Source == "DSharpPlus.CommandsNext") {
 							var command = e.Command;
 							var sb = new StringBuilder();
 
@@ -166,11 +166,18 @@ namespace Gauss {
 								}
 								sb.Append('`');
 							}
+							Console.WriteLine(e.Exception);
 							if (e.Context.Channel.IsPrivate) {
 								e.Context.RespondAsync($"Invalid syntax for `{e.Command.QualifiedName}`. Syntax:\n{sb}");
 							} else {
 								e.Context.Member.SendMessageAsync($"Invalid syntax for `{e.Command.QualifiedName}`. Syntax:\n{sb}");
 							}
+						} else {
+							this._client.Logger.LogError(
+								LogEvent.Module,
+								e.Exception,
+								$"Someone tried executing a command, but it failed."
+							);
 						}
 						break;
 					}
