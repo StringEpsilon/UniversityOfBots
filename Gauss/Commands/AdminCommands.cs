@@ -98,8 +98,7 @@ namespace Gauss.Commands {
 
 			public override Task BeforeExecutionAsync(CommandContext context) {
 				var guildId = context.GetGuild().Id;
-				if (this._config.GuildConfigs.ContainsKey(guildId)) {
-
+				if (!this._config.GuildConfigs.ContainsKey(guildId)) {
 					this._config.GuildConfigs.Add(guildId, new GuildConfig());
 				}
 
