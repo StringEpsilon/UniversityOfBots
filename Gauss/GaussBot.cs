@@ -136,6 +136,7 @@ namespace Gauss {
 		}
 
 		private Task Commands_CommandErrored(CommandsNextExtension sender, CommandErrorEventArgs e) {
+			bool informUser = false;
 			switch (e.Exception) {
 				case Checks​Failed​Exception checkException: {
 						if (checkException.FailedChecks.Any(ex => ex is CheckDisabledAttribute || ex is RequireAdminAttribute)) {
@@ -178,6 +179,7 @@ namespace Gauss {
 								e.Exception,
 								$"Someone tried executing a command, but it failed."
 							);
+							informUser = true;
 						}
 						break;
 					}
@@ -208,8 +210,16 @@ namespace Gauss {
 							e.Exception,
 							$"Someone tried executing a command, but it failed."
 						);
+						informUser = true;
 						break;
 					}
+			}
+			if (informUser) {
+				if (e.Context.Channel.IsPrivate) {
+					e.Context.RespondAsync($"An error occured while executing your command. Sorry.");
+				} else {
+					e.Context.Member.SendMessageAsync($"An error occured while executing your command. Sorry.");
+				}
 			}
 
 			return Task.CompletedTask;
