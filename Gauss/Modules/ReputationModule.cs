@@ -79,6 +79,7 @@ namespace Gauss.Modules {
 					}
 					IEnumerable<DiscordMember> awardedMembers = mentionedUsers
 						.Where(y => y != e.Author.Id)
+						.Distinct()
 						.Select(y => e.Guild.Members[y]);
 
 					foreach (var member in awardedMembers) {
