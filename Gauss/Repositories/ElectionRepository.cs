@@ -177,24 +177,22 @@ namespace Gauss.Database {
 			}
 		}
 
-		public (string, string) SaveVotes(ulong guildId, ulong electionId, ulong voterId, List<Candidate> candidates, DiscordClient client) {
+		public (string, string) SaveBallot(ulong guildId, ulong electionId, ulong voterId, Ballot ballot, DiscordClient client) {
 			var election = this.GetElection(guildId, electionId);
-			this.WriteAuditLog(election, "Add vote - before");
+			this.WriteAuditLog(election, "Add ballot - before");
 			string hashBefore = null;
 			string hashAfter = null;
 			lock (_elections) {
 				hashBefore = election.GetHash();
 				if (!election.Voters.Contains(voterId)) {
 					election.Voters.Add(voterId);
-					foreach (Candidate candidate in candidates) {
-						election.Candidates.Find(y => y.UserId == candidate.UserId).Votes++;
-					}
+					election.Ballots.Add(ballot);
 				}
 				hashAfter = election.GetHash();
 			}
 			this.SaveChanges();
 			_ = election.Message.UpdateMessage(client, election.GetEmbed());
-			this.WriteAuditLog(election, "Add vote - after");
+			this.WriteAuditLog(election, "Add ballot - after");
 			return (hashBefore, hashAfter);
 		}
 

@@ -39,6 +39,8 @@ namespace Gauss.Commands {
 			DateTime start,
 			[Description("Planned end of the election (UTC).")]
 			DateTime end,
+			[Description("Number of seats / winners.")]
+			int seats,
 			[Description("List of candidates.")]
 			params DiscordUser[] candidateNames
 		) {
@@ -62,9 +64,9 @@ namespace Gauss.Commands {
 				Option = char.ConvertFromUtf32(65 + index),
 				UserId = item.Id,
 				Username = item.Username + "#" + item.Discriminator,
-				Votes = 0,
 			}).ToList();
 			var election = new Election() {
+				Seats = seats,
 				Candidates = candidates,
 				Title = title,
 				Start = start.ToUniversalTime(),
@@ -131,7 +133,7 @@ namespace Gauss.Commands {
 			}
 
 			var election = _pollRepository.GetElection(guild.Id, electionId);
-			List<Candidate> candidates = new();
+			Ballot ballot = new();
 			foreach (var item in approvals) {
 				Candidate foundCandidate = null;
 				if (item.Length == 1) {
@@ -148,18 +150,18 @@ namespace Gauss.Commands {
 					await context.RespondAsync($"Could not find `{item}` on the list of candidates.");
 					return;
 				}
-				candidates.Add(foundCandidate);
+				ballot.Approvals.Add(foundCandidate);
 			}
 
 			var confirmationMessage = $"Please confirm that these are the correct candidate(s) you approve of for {election.Title} and that your ballot is complete?:\n\n"
-				+ $"{string.Join("\n", candidates.Select(y => " - <@" + y.UserId + ">"))}\n\n"
+				+ $"{string.Join("\n", ballot.Approvals.Select(y => " - <@" + y.UserId + ">"))}\n\n"
 				+ $"**Your vote can not be changed after confirmation. Make sure you selected all your approved candidates.**";
 
 
 			await context.CreateConfirmation(
 				confirmationMessage,
 				async () => {
-					var (hashBefore, hashafter) = _pollRepository.SaveVotes(guild.Id, election.ID, context.User.Id, candidates, context.Client);
+					var (hashBefore, hashafter) = _pollRepository.SaveBallot(guild.Id, election.ID, context.User.Id, ballot, context.Client);
 					await context.RespondAsync("Your vote has been cast. These hashes can be used to check the audit log after the election is over: \n"
 						+ $"Hash before: {hashBefore}\nHash after: {hashafter}");
 				}

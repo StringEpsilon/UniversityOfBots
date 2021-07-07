@@ -6,7 +6,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 namespace Gauss.Models.Elections {
 	public class Candidate {
-		public string Option {get;set;}
+		public string Option { get; set; }
 
 		/// <summary>
 		/// Username of the candidate.
@@ -16,11 +16,6 @@ namespace Gauss.Models.Elections {
 		/// <summary>
 		/// User ID of the candidate.
 		/// </summary>
-		public ulong UserId {get;set;}
-		
-		/// <summary>
-		/// Number of votes the candidate received.
-		/// </summary>
-		public uint Votes {get;set;}
+		public ulong UserId { get; set; }
 	}
 }

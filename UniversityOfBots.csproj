@@ -8,6 +8,7 @@
 		<EnableDefaultContentItems>false</EnableDefaultContentItems>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Combinatorics" Version="1.1.0.19"/>
 		<PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00779"/>
 		<PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00779"/>
 		<PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00779"/>

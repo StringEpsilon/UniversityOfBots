@@ -9,11 +9,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Combinatorics.Collections;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
 
 namespace Gauss.Models.Elections {
 	public class Election {
+		public int Seats { get; set; }
+
 		public ulong GuildId { get; set; }
 
 		public ulong ID { get; set; }
@@ -46,6 +49,8 @@ namespace Gauss.Models.Elections {
 		/// List of candidates that can be voted for in the election.
 		/// </summary>
 		public List<Candidate> Candidates { get; set; }
+
+		public List<Ballot> Ballots { get; set; }
 
 		/// <summary>
 		/// List of users (by ID) who voted in the election.
@@ -108,24 +113,39 @@ namespace Gauss.Models.Elections {
 			return embedBuilder.Build();
 		}
 
+		public (double score, IList<Candidate> list) CalcucateResults() {
+			var combinations = new Combinations<Candidate>(this.Candidates, this.Seats, GenerateOption.WithoutRepetition);
+			List<(double score, IList<Candidate> list)> result = new();
+			foreach (IList<Candidate> set in combinations) {
+				double score = 0;
+				foreach (var ballot in this.Ballots) {
+					double ballotScore = 0;
+					double harmonic = 1;
+					foreach (var approval in ballot.Approvals) {
+						if (set.Any(candidate => candidate.UserId == approval.UserId)) {
+							ballotScore += harmonic;
+							harmonic /= 2;
+						}
+					}
+					score += ballotScore;
+				}
+				result.Add((score, set));
+			}
+
+			return result.OrderByDescending(set => set.score).First();
+		}
+
 		public string GetResults() {
 			var stringBuilder = new StringBuilder();
-			var sortedCandidates = this.Candidates.OrderByDescending(y => y.Votes);
-			int place = 1;
-			foreach (var candidate in sortedCandidates) {
+			var (score, list) = this.CalcucateResults();
+			foreach (var candidate in list) {
 				stringBuilder
-					.Append(place)
-					.Append(". ")
 					.Append(candidate.Username)
-					.Append(": ")
-					.Append(candidate.Votes)
 					.Append('\n');
-
-				place++;
 			}
 			stringBuilder
-				.Append("Number of voters: ")
-				.Append(this.Voters.Count);
+				.Append("Approval rating: ")
+				.Append(score);
 
 			return stringBuilder.ToString();
 		}
